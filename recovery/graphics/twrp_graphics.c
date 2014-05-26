@@ -55,6 +55,12 @@
 
 // #define PRINT_SCREENINFO 1 // Enables printing of screen info to log
 
+/*
+ * For this device, the framebuffer start needs to be aligned to a 4096-byte
+ * boundary.
+ */
+#define FB_MEM_ALIGN 0x1000
+
 typedef struct {
     GGLSurface texture;
     unsigned offset[97];
@@ -69,6 +75,9 @@ static GGLSurface gr_framebuffer[NUM_BUFFERS];
 static GGLSurface gr_mem_surface;
 static unsigned gr_active_fb = 0;
 static unsigned double_buffering = 0;
+static int gr_rotation = 0; // angle - 0, 90, 180, 270
+static uint8_t **gr_rot_helpers = NULL;
+static int gr_freeze = 0;
 
 static int gr_fb_fd = -1;
 static int gr_vt_fd = -1;
@@ -79,14 +88,14 @@ static struct fb_fix_screeninfo fi;
 #ifdef PRINT_SCREENINFO
 static void print_fb_var_screeninfo()
 {
-	LOGI("vi.xres: %d\n", vi.xres);
-	LOGI("vi.yres: %d\n", vi.yres);
-	LOGI("vi.xres_virtual: %d\n", vi.xres_virtual);
-	LOGI("vi.yres_virtual: %d\n", vi.yres_virtual);
-	LOGI("vi.xoffset: %d\n", vi.xoffset);
-	LOGI("vi.yoffset: %d\n", vi.yoffset);
-	LOGI("vi.bits_per_pixel: %d\n", vi.bits_per_pixel);
-	LOGI("vi.grayscale: %d\n", vi.grayscale);
+	printf("vi.xres: %d\n", vi.xres);
+	printf("vi.yres: %d\n", vi.yres);
+	printf("vi.xres_virtual: %d\n", vi.xres_virtual);
+	printf("vi.yres_virtual: %d\n", vi.yres_virtual);
+	printf("vi.xoffset: %d\n", vi.xoffset);
+	printf("vi.yoffset: %d\n", vi.yoffset);
+	printf("vi.bits_per_pixel: %d\n", vi.bits_per_pixel);
+	printf("vi.grayscale: %d\n", vi.grayscale);
 }
 #endif
 
@@ -101,16 +110,17 @@ static int get_framebuffer(GGLSurface *fb)
         return -1;
     }
 
-	vi2 = malloc(sizeof(vi) + sizeof(__u32));
+    vi2 = malloc(sizeof(vi) + sizeof(__u32));
 
     if (ioctl(fd, FBIOGET_VSCREENINFO, vi2) < 0) {
         perror("failed to get fb0 info");
         close(fd);
-		free(vi2);
+        free(vi2);
         return -1;
     }
-	memcpy((void*) &vi, vi2, sizeof(vi));
-	free(vi2);
+    memcpy((void*) &vi, vi2, sizeof(vi));
+    free(vi2);
+
     fprintf(stderr, "Pixel format: %dx%d @ %dbpp\n", vi.xres, vi.yres, vi.bits_per_pixel);
 
     vi.bits_per_pixel = PIXEL_SIZE * 8;
@@ -195,7 +205,7 @@ static int get_framebuffer(GGLSurface *fb)
     fb->width = vi.xres;
     fb->height = vi.yres;
 #ifdef BOARD_HAS_JANKY_BACKBUFFER
-    LOGI("setting JANKY BACKBUFFER\n");
+    printf("setting JANKY BACKBUFFER\n");
     fb->stride = fi.line_length/2;
 #else
     fb->stride = vi.xres_virtual;
@@ -204,10 +214,16 @@ static int get_framebuffer(GGLSurface *fb)
     fb->format = PIXEL_FORMAT;
     memset(fb->data, 0, vi.yres * fb->stride * PIXEL_SIZE);
 
+    /* Make sure the framebuffer is aligned to the specific boundary */
+    unsigned fb_size = vi.yres * fb->stride * PIXEL_SIZE;
+    if (fb_size % FB_MEM_ALIGN != 0) {
+        fb_size += FB_MEM_ALIGN - fb_size % FB_MEM_ALIGN;
+    }
+
     fb++;
 
     /* check if we can use double buffering */
-    if (vi.yres * fi.line_length * 2 > fi.smem_len)
+    if (fb_size * 2 > fi.smem_len)
         return fd;
 
     double_buffering = 1;
@@ -217,13 +233,13 @@ static int get_framebuffer(GGLSurface *fb)
     fb->height = vi.yres;
 #ifdef BOARD_HAS_JANKY_BACKBUFFER
     fb->stride = fi.line_length/2;
-    fb->data = (void*) (((unsigned) bits) + vi.yres * fi.line_length);
+    fb->data = (void*) (((unsigned) bits) + fb_size);
 #else
     fb->stride = vi.xres_virtual;
-    fb->data = (void*) (((unsigned) bits) + vi.yres * fb->stride * PIXEL_SIZE);
+    fb->data = (void*) (((unsigned) bits) + fb_size);
 #endif
     fb->format = PIXEL_FORMAT;
-    memset(fb->data, 0, vi.yres * fb->stride * PIXEL_SIZE);
+    memset(fb->data, 0, fb_size);
 
 #ifdef PRINT_SCREENINFO
 	print_fb_var_screeninfo();
@@ -254,6 +270,9 @@ static void set_active_framebuffer(unsigned n)
 
 void gr_flip(void)
 {
+    if(gr_freeze)
+        return;
+
     GGLContext *gl = gr_context;
 
     /* swap front and back buffers */
@@ -263,17 +282,25 @@ void gr_flip(void)
 #ifdef BOARD_HAS_FLIPPED_SCREEN
     /* flip buffer 180 degrees for devices with physicaly inverted screens */
     unsigned int i;
-    for (i = 1; i < (vi.xres * vi.yres); i++) {
-        unsigned short tmp = gr_mem_surface.data[i];
-        gr_mem_surface.data[i] = gr_mem_surface.data[(vi.xres * vi.yres * 2) - i];
-        gr_mem_surface.data[(vi.xres * vi.yres * 2) - i] = tmp;
+    unsigned int j;
+    uint8_t tmp;
+    for (i = 0; i < ((vi.xres_virtual * vi.yres)/2); i++) {
+	for (j = 0; j < PIXEL_SIZE; j++) {
+		tmp = gr_mem_surface.data[i * PIXEL_SIZE + j];
+		gr_mem_surface.data[i * PIXEL_SIZE + j] = gr_mem_surface.data[(vi.xres_virtual * vi.yres * PIXEL_SIZE) - ((i+1) * PIXEL_SIZE) + j];
+		gr_mem_surface.data[(vi.xres_virtual * vi.yres * PIXEL_SIZE) - ((i+1) * PIXEL_SIZE) + j] = tmp;
+	}
     }
 #endif
 
     /* copy data from the in-memory surface to the buffer we're about
      * to make active. */
+#ifndef TW_HAS_LANDSCAPE
     memcpy(gr_framebuffer[gr_active_fb].data, gr_mem_surface.data,
            vi.xres_virtual * vi.yres * PIXEL_SIZE);
+#else
+    gr_cpy_fb_with_rotation(gr_framebuffer[gr_active_fb].data, gr_mem_surface.data);
+#endif
 
     /* inform the display driver */
     set_active_framebuffer(gr_active_fb);
@@ -510,8 +537,14 @@ void* gr_loadFont(const char* fontName)
     if (fd == -1)
     {
         char tmp[128];
-
+#ifndef TW_HAS_LANDSCAPE
         sprintf(tmp, "/res/fonts/%s.dat", fontName);
+#else
+        if(gr_get_rotation()%180 == 0)
+            sprintf(tmp, "/res/fonts/%s.dat", fontName);
+        else
+            sprintf(tmp, "/res/landscape/fonts/%s.dat", fontName);
+#endif
         fd = open(tmp, O_RDONLY);
         if (fd == -1)
             return NULL;
@@ -669,6 +702,8 @@ void gr_exit(void)
 
     free(gr_mem_surface.data);
 
+    free(gr_rot_helpers);
+
     ioctl(gr_vt_fd, KDSETMODE, (void*) KD_TEXT);
     close(gr_vt_fd);
     gr_vt_fd = -1;
@@ -676,10 +711,20 @@ void gr_exit(void)
 
 int gr_fb_width(void)
 {
-    return gr_framebuffer[0].width;
+    return gr_mem_surface.width;
 }
 
 int gr_fb_height(void)
+{
+    return gr_mem_surface.height;
+}
+
+int gr_screen_width(void)
+{
+    return gr_framebuffer[0].width;
+}
+
+int gr_screen_height(void)
 {
     return gr_framebuffer[0].height;
 }
@@ -728,4 +773,193 @@ int gr_free_surface(gr_surface surface)
 void gr_write_frame_to_file(int fd)
 {
     write(fd, gr_mem_surface.data, vi.xres * vi.yres * vi.bits_per_pixel / 8);
+}
+
+void gr_set_rotation(int rot)
+{
+    gr_rotation = rot;
+}
+
+int gr_get_rotation(void)
+{
+    return gr_rotation;
+}
+
+#ifdef TW_HAS_LANDSCAPE
+void gr_cpy_fb_with_rotation(void *dst, void *src)
+{
+    switch(gr_rotation)
+    {
+        case 0:
+            memcpy(dst, src, vi.xres_virtual * vi.yres * PIXEL_SIZE);
+            break;
+        case 90:
+        {
+#if PIXEL_SIZE == 4
+            gr_rotate_90deg_4b((uint32_t*)dst, (uint32_t*)src);
+#elif PIXEL_SIZE == 2
+            gr_rotate_90deg_2b((uint16_t*)dst, (uint16_t*)src);
+#endif
+            break;
+        }
+        case 180:
+        {
+#if PIXEL_SIZE == 4
+            gr_rotate_180deg_4b((uint32_t*)dst, (uint32_t*)src);
+#elif PIXEL_SIZE == 2
+            gr_rotate_180deg_2b((uint16_t*)dst, (uint16_t*)src);
+#endif
+            break;
+        }
+        case 270:
+        {
+#if PIXEL_SIZE == 4
+            gr_rotate_270deg_4b((uint32_t*)dst, (uint32_t*)src);
+#elif PIXEL_SIZE == 2
+            gr_rotate_270deg_2b((uint16_t*)dst, (uint16_t*)src);
+#endif
+            break;
+        }
+    }
+}
+
+void gr_update_surface_dimensions()
+{
+    if(gr_rotation%180 == 0)
+    {
+        gr_mem_surface.width = vi.xres;
+        gr_mem_surface.height = vi.yres;
+        if(gr_rotation == 0)
+            gr_mem_surface.stride = vi.xres_virtual;
+        else
+            gr_mem_surface.stride = vi.xres;
+    }
+    else
+    {
+        gr_mem_surface.width = vi.yres;
+        gr_mem_surface.height = vi.xres;
+        gr_mem_surface.stride = vi.yres;
+    }
+    GGLContext *gl = gr_context;
+    gl->colorBuffer(gl, &gr_mem_surface);
+}
+
+void gr_rotate_90deg_4b(uint32_t *dst, uint32_t *src)
+{
+    uint32_t i;
+    int32_t x;
+
+    if(!gr_rot_helpers)
+        gr_rot_helpers = malloc(gr_mem_surface.height*sizeof(uint32_t*));
+
+    uint32_t **helpers = (uint32_t**)gr_rot_helpers;
+
+    helpers[0] = src;
+    for(i = 1; i < gr_mem_surface.height; ++i)
+        helpers[i] = helpers[i-1] + gr_mem_surface.width;
+
+    for(i = 0; i < gr_mem_surface.width; ++i)
+    {
+        for(x = gr_mem_surface.height-1; x >= 0; --x)
+            *dst++ = *(helpers[x]++);
+        dst += vi.xres_virtual - vi.xres;
+    }
+}
+
+void gr_rotate_90deg_2b(uint16_t *dst, uint16_t *src)
+{
+    uint32_t i;
+    int32_t x;
+
+    if(!gr_rot_helpers)
+        gr_rot_helpers = malloc(gr_mem_surface.height*sizeof(uint16_t*));
+
+    uint16_t **helpers = (uint16_t**)gr_rot_helpers;
+
+    helpers[0] = src;
+    for(i = 1; i < gr_mem_surface.height; ++i)
+        helpers[i] = helpers[i-1] + gr_mem_surface.width;
+
+    for(i = 0; i < gr_mem_surface.width; ++i)
+    {
+        for(x = gr_mem_surface.height-1; x >= 0; --x)
+            *dst++ = *(helpers[x]++);
+        dst += vi.xres_virtual - vi.xres;
+    }
+}
+
+void gr_rotate_270deg_4b(uint32_t *dst, uint32_t *src)
+{
+    if(!gr_rot_helpers)
+        gr_rot_helpers = malloc(gr_mem_surface.height*sizeof(uint32_t*));
+
+    uint32_t i, x;
+    uint32_t **helpers = (uint32_t**)gr_rot_helpers;
+
+    helpers[0] = src + gr_mem_surface.width-1;
+    for(i = 1; i < gr_mem_surface.height; ++i)
+        helpers[i] = helpers[i-1] + gr_mem_surface.width;
+
+    for(i = 0; i < gr_mem_surface.width; ++i)
+    {
+        for(x = 0; x < gr_mem_surface.height; ++x)
+            *dst++ = *(helpers[x]--);
+        dst += vi.xres_virtual - vi.xres;
+    }
+}
+
+void gr_rotate_270deg_2b(uint16_t *dst, uint16_t *src)
+{
+    if(!gr_rot_helpers)
+        gr_rot_helpers = malloc(gr_mem_surface.height*sizeof(uint16_t*));
+
+    uint32_t i, x;
+    uint16_t **helpers = (uint16_t**)gr_rot_helpers;
+
+    helpers[0] = src + gr_mem_surface.width-1;
+    for(i = 1; i < gr_mem_surface.height; ++i)
+        helpers[i] = helpers[i-1] + gr_mem_surface.width;
+
+    for(i = 0; i < gr_mem_surface.width; ++i)
+    {
+        for(x = 0; x < gr_mem_surface.height; ++x)
+            *dst++ = *(helpers[x]--);
+        dst += vi.xres_virtual - vi.xres;
+    }
+}
+
+void gr_rotate_180deg_4b(uint32_t *dst, uint32_t *src)
+{
+    uint32_t i, x;
+    int len = vi.xres * vi.yres;
+    src += len;
+    for(i = 0; i < gr_mem_surface.height; ++i)
+    {
+        for(x = 0; x < gr_mem_surface.width; ++x)
+            *dst++ = *src--;
+        dst += vi.xres_virtual - vi.xres;
+    }
+}
+
+void gr_rotate_180deg_2b(uint16_t *dst, uint16_t *src)
+{
+    uint32_t i, x;
+    int len = vi.xres * vi.yres;
+    src += len;
+    for(i = 0; i < gr_mem_surface.height; ++i)
+    {
+        for(x = 0; x < gr_mem_surface.width; ++x)
+            *dst++ = *src--;
+        dst += vi.xres_virtual - vi.xres;
+    }
+}
+
+#endif // TW_HAS_LANDSCAPE
+
+void gr_freeze_fb(int freeze)
+{
+    if(freeze)
+        ++gr_freeze;
+    else if(!freeze && gr_freeze > 0)
+        --gr_freeze;
 }
