@@ -24,12 +24,12 @@ include device/sony/qcom-common/BoardConfigCommon.mk
 
 USE_CAMERA_STUB := false
 
+BOARD_EGL_CFG := device/sony/nicki/rootdir/system/lib/egl/egl.cfg
+
 TARGET_BOARD_PLATFORM := msm8960
 TARGET_CPU_VARIANT := krait
 BOARD_VENDOR_PLATFORM := nicki
 TARGET_BOOTLOADER_BOARD_NAME := qcom
-
-TARGET_OTA_ASSERT_DEVICE := c1904,c1905,nicki
 
 TARGET_GLOBAL_CFLAGS += -mfpu=neon-vfpv4 -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon-vfpv4 -mfloat-abi=softfp

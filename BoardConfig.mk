@@ -17,3 +17,5 @@
 include device/sony/nicki/BoardConfigCommon.mk
 
 TARGET_KERNEL_CONFIG := nicki_defconfig
+
+TARGET_OTA_ASSERT_DEVICE := c1904,c1905,nicki
