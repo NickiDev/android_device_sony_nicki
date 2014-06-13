@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+TARGET_PROVIDES_ADRENO_DRIVER := true
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
-# Inherit qcom-common files.
-$(call inherit-product, device/sony/qcom-common/qcom-common-adreno.mk)
-
-# Inherit sony common
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+$(call inherit-product, vendor/sony/nicki/nicki-vendor.mk)
 $(call inherit-product, device/sony/common/resources.mk)
+$(call inherit-product, device/sony/qcom-common/qcom-common.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/sony/nicki/overlay
 
@@ -208,6 +208,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.qc.sdk.izat.service_mask=0x4 \
     persist.gps.qc_nlp_in_use=0 \
     ro.gps.agps_provider=1 \
+
+# OpenGL ES 3.0
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.opengles.version=196608
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
