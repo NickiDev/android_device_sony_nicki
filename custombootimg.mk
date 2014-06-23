@@ -9,9 +9,10 @@ INITSH := device/sony/huashan/combinedroot/init.sh
 BOOTREC_DEVICE := $(PRODUCT_OUT)/recovery/bootrec-device
 CWM_RECOVERY := device/sony/huashan/recovery/ramdisk-recovery.cpio
 CWM_BUSYBOX := device/sony/huashan/recovery/busybox
+SONY_LOGO := $(PRODUCT_OUT)/root/logo.rle
 
 INSTALLED_BOOTIMAGE_TARGET := $(PRODUCT_OUT)/boot.img
-$(INSTALLED_BOOTIMAGE_TARGET): $(PRODUCT_OUT)/kernel $(uncompressed_ramdisk) $(CWM_RECOVERY) $(INSTALLED_RAMDISK_TARGET) $(INITSH) $(BOOTREC_DEVICE) $(CWM_BUSYBOX) $(PRODUCT_OUT)/utilities/extract_elf_ramdisk $(MKBOOTIMG) $(MINIGZIP) $(INTERNAL_BOOTIMAGE_FILES)
+$(INSTALLED_BOOTIMAGE_TARGET): $(PRODUCT_OUT)/kernel $(uncompressed_ramdisk) $(CWM_RECOVERY) $(INSTALLED_RAMDISK_TARGET) $(INITSH) $(BOOTREC_DEVICE) $(SONY_LOGO) $(CWM_BUSYBOX) $(PRODUCT_OUT)/utilities/extract_elf_ramdisk $(MKBOOTIMG) $(MINIGZIP) $(INTERNAL_BOOTIMAGE_FILES)
 	$(call pretty,"Boot image: $@")
 
 	$(hide) rm -fr $(PRODUCT_OUT)/combinedroot
