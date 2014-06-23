@@ -14,9 +14,6 @@
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-# Inherit qcom-common files.
-$(call inherit-product, device/sony/qcom-common/qcom-common.mk)
-
 DEVICE_PACKAGE_OVERLAYS += device/sony/huashan/overlay
 
 # Permissions
@@ -90,6 +87,7 @@ PRODUCT_COPY_FILES += \
 
 # Media
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/system/etc/media_codecs.xml:system/etc/media_codecs.xml \
     $(LOCAL_PATH)/rootdir/system/etc/media_profiles.xml:system/etc/media_profiles.xml
 
 # NFC
@@ -154,24 +152,16 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/sbin/wait4tad_static:root/sbin/wait4tad_static \
     $(LOCAL_PATH)/rootdir/sbin/tad_static:root/sbin/tad_static
 
-# Display
-PRODUCT_PACKAGES += \
-    hwcomposer.msm8960 \
-    gralloc.msm8960 \
-    copybit.msm8960 \
-    memtrack.msm8960
+# Hostapd
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd_default.conf:system/etc/hostapd/hostapd_default.conf \
+    $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.accept:system/etc/hostapd/hostapd.accept \
+    $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.deny:system/etc/hostapd/hostapd.deny
 
-# NFC Support
+# SoftAP
 PRODUCT_PACKAGES += \
-    libnfc \
-    libnfc_jni \
-    Nfc \
-    Tag \
-    com.android.nfc_extras
-
-# Recovery
-PRODUCT_PACKAGES += \
-    extract_elf_ramdisk
+    libQWiFiSoftApCfg \
+    libqsap_sdk
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -187,6 +177,37 @@ PRODUCT_PACKAGES += \
 # BT
 PRODUCT_PACKAGES += \
     hci_qcomm_init
+
+# Camera wrapper
+PRODUCT_PACKAGES += \
+    camera.qcom
+
+# Display
+PRODUCT_PACKAGES += \
+    hwcomposer.msm8960 \
+    gralloc.msm8960 \
+    copybit.msm8960 \
+    memtrack.msm8960
+
+# Lights
+PRODUCT_PACKAGES += \
+    lights.qcom
+
+# NFC Support
+PRODUCT_PACKAGES += \
+    libnfc \
+    libnfc_jni \
+    Nfc \
+    Tag \
+    com.android.nfc_extras
+
+# Power
+PRODUCT_PACKAGES += \
+    power.qcom
+
+# Recovery
+PRODUCT_PACKAGES += \
+    extract_elf_ramdisk
 
 # Sensors
 PRODUCT_PACKAGES += \
@@ -211,6 +232,30 @@ PRODUCT_PACKAGES += \
     LiveWallpapersPicker \
     VisualizationWallpapers \
 
+# QCOM Display
+PRODUCT_PACKAGES += \
+    libgenlock \
+    libmemalloc \
+    liboverlay \
+    libqdutils \
+    libtilerenderer \
+    libI420colorconvert
+
+# Omx
+PRODUCT_PACKAGES += \
+    libOmxAacEnc \
+    libOmxAmrEnc \
+    libOmxCore \
+    libOmxEvrcEnc \
+    libOmxQcelp13Enc \
+    libOmxVdec \
+    libOmxVenc \
+    libc2dcolorconvert \
+    libdashplayer \
+    libdivxdrmdecrypt \
+    libmm-omxcore \
+    libstagefrighthw
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     e2fsck
@@ -228,12 +273,36 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.sf.lcd_density=320 \
     debug.composition.type=c2d
 
+# QCOM
+PRODUCT_PROPERTY_OVERRIDES += \
+    com.qc.hardware=true
+
+# QC Perf
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.vendor.extension_library=/system/lib/libqc-opt.so
+
+# Qualcomm random numbers generated
+PRODUCT_PACKAGES += qrngd
+
+# QCOM Display
+PRODUCT_PROPERTY_OVERRIDES += \
+    debug.sf.hw=1 \
+    debug.egl.hw=1 \
+    persist.hwc.mdpcomp.enable=true \
+    debug.mdpcomp.logs=0
+
 # QCOM Location
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.qc.sdk.izat.premium_enabled=0 \
     ro.qc.sdk.izat.service_mask=0x4 \
     persist.gps.qc_nlp_in_use=0 \
     ro.gps.agps_provider=1 \
+
+# Wifi
+PRODUCT_PROPERTY_OVERRIDES += \
+    wifi.interface=wlan0 \
+    wifi.supplicant_scan_interval=15 \
+    wlan.driver.ath=0
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -251,10 +320,15 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.call_ring.multiple=0
 
+# OpenGL ES 3.0
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.opengles.version=196608
+
 # call dalvik heap config
 $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 
 # Include non-opensource parts/ proprietary files
 $(call inherit-product, vendor/sony/huashan/huashan-vendor.mk)
+
 # Include own Adreno blobs
 $(call inherit-product, vendor/sony/huashan/huashan-adreno-blobs.mk)
