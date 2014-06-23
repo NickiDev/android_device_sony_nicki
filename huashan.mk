@@ -53,21 +53,10 @@ PRODUCT_COPY_FILES += \
 # Device specific init
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.qcom.rc:root/init.qcom.rc \
-    $(LOCAL_PATH)/rootdir/init.sony.rc:root/init.sony.rc \
-    $(LOCAL_PATH)/rootdir/init.sony-platform.rc:root/init.sony-platform.rc \
-    $(LOCAL_PATH)/rootdir/init.sony-device.rc:root/init.sony-device.rc \
     $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc \
     $(LOCAL_PATH)/rootdir/ueventd.qcom.rc:root/ueventd.qcom.rc \
     $(LOCAL_PATH)/rootdir/init.recovery.qcom.rc:root/init.recovery.qcom.rc \
     $(LOCAL_PATH)/rootdir/system/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh
-
-# Device specific scripts
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.qcom.sh:root/init.qcom.sh \
-    $(LOCAL_PATH)/rootdir/init.qcom.early_boot.sh:root/init.qcom.early_boot.sh \
-    $(LOCAL_PATH)/rootdir/init.qcom.syspart_fixup.sh:root/init.qcom.syspart_fixup.sh \
-    $(LOCAL_PATH)/rootdir/system/etc/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
-    $(LOCAL_PATH)/rootdir/system/etc/init.qcom.thermal_conf.sh:system/etc/init.qcom.thermal_conf.sh \
 
 # Sony system_monitor
 PRODUCT_COPY_FILES += \
@@ -267,3 +256,5 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-1024-dalvi
 
 # Include non-opensource parts/ proprietary files
 $(call inherit-product, vendor/sony/huashan/huashan-vendor.mk)
+# Include own Adreno blobs
+$(call inherit-product, vendor/sony/huashan/huashan-adreno-blobs.mk)
