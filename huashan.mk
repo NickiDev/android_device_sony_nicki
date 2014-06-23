@@ -137,10 +137,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/system/etc/sensors.conf:system/etc/sensors.conf
 
-# Thermal monitor configuration
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/system/etc/thermald-8960ab.conf:system/etc/thermald-8960ab.conf
-
 # Touchpad
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/system/usr/idc/clearpad.idc:system/usr/idc/clearpad.idc
@@ -173,7 +169,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     hwcomposer.msm8960 \
     gralloc.msm8960 \
-    copybit.msm8960
+    copybit.msm8960 \
+    memtrack.msm8960
 
 # NFC Support
 PRODUCT_PACKAGES += \
@@ -234,11 +231,13 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 
 # Bluetooth
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.qualcomm.bt.hci_transport=smd
+    ro.qualcomm.bt.hci_transport=smd \
+    qcom.bt.le_dev_pwr_class=1
 
 # Display
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sf.lcd_density=320
+    ro.sf.lcd_density=320 \
+    debug.composition.type=c2d
 
 # QCOM Location
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -246,8 +245,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.qc.sdk.izat.service_mask=0x4 \
     persist.gps.qc_nlp_in_use=0 \
     ro.gps.agps_provider=1 \
-    ro.service.swiqi2.supported=true \
-    persist.service.swiqi2.enable=1
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
