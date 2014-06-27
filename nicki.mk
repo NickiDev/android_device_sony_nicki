@@ -1,5 +1,5 @@
 # Copyright (C) 2013 The CyanogenMod Project
-a#
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -356,6 +356,3 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-1024-dalvi
 
 # Include non-opensource parts/ proprietary files
 $(call inherit-product, vendor/sony/nicki/nicki-vendor.mk)
-
-# Include own Adreno blobs
-$(call inherit-product, vendor/sony/nicki/nicki-adreno-blobs.mk)
