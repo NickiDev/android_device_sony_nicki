@@ -15,15 +15,15 @@
 # inherit from Sony common
 -include device/sony/common/BoardConfigCommon.mk
 
-# inherit from qcom-common
--include device/sony/qcom-common/BoardConfigCommon.mk
-
 # inherit from the proprietary version
--include vendor/sony/huashan/BoardConfigVendor.mk
+-include vendor/sony/nicki/BoardConfigVendor.mk
 
-TARGET_NO_BOOTLOADER := true
-TARGET_NO_RADIOIMAGE := true
-BOARD_HAS_NO_MISC_PARTITION := true
+TARGET_SPECIFIC_HEADER_PATH += device/sony/nicki/include
+
+# Flags
+TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
+TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
+COMMON_GLOBAL_CFLAGS += -D__ARM_USE_PLD -D__ARM_CACHE_LINE_SIZE=64
 
 # Architecture
 TARGET_ARCH := arm
@@ -31,29 +31,22 @@ TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_SMP := true
+TARGET_ARCH_VARIANT_CPU := cortex-a9
+TARGET_CPU_VARIANT := krait
 
-# Assert
-TARGET_OTA_ASSERT_DEVICE := C5302,C5303,C5306,huashan
-
-TARGET_SPECIFIC_HEADER_PATH += device/sony/huashan/include
+# Misc
+TARGET_NO_BOOTLOADER := true
+TARGET_NO_RADIOIMAGE := true
+BOARD_HAS_NO_MISC_PARTITION := true
 
 # Kernel properties
-TARGET_KERNEL_SOURCE := kernel/sony/msm8960t
-TARGET_KERNEL_CONFIG := viskan_huashan_defconfig
+TARGET_KERNEL_SOURCE := kernel/sony/msm8x27
+TARGET_KERNEL_CONFIG := nicki_defconfig
 
 # Platform
 TARGET_BOOTLOADER_BOARD_NAME := MSM8960
 TARGET_BOARD_PLATFORM := msm8960
-BOARD_VENDOR_PLATFORM := viskan
-
-# Architecture
-TARGET_ARCH_VARIANT_CPU := cortex-a9
-TARGET_CPU_VARIANT := krait
-
-# Flags
-TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
-COMMON_GLOBAL_CFLAGS += -D__ARM_USE_PLD -D__ARM_CACHE_LINE_SIZE=64
+BOARD_VENDOR_PLATFORM := nicki
 
 # Krait optimizations
 TARGET_USE_KRAIT_BIONIC_OPTIMIZATION := true
@@ -65,8 +58,8 @@ TARGET_KRAIT_BIONIC_PLDSIZE   := 64
 
 # Kernel information
 BOARD_KERNEL_BASE     := 0x80200000
-BOARD_KERNEL_PAGESIZE := 2048
-BOARD_KERNEL_CMDLINE  := androidboot.hardware=qcom user_debug=31 androidboot.baseband=msm msm_rtb.filter=0x3F ehci-hcd.park=3 vmalloc=400M
+BOARD_KERNEL_PAGESIZE := 4096
+BOARD_KERNEL_CMDLINE  := panic=3 console=ttyHSL0,115200,n8 androidboot.hardware=qcom user_debug=31 androidboot.baseband=msm msm_rtb.filter=0x3F ehci-hcd.park=3 vmalloc=400M
 BOARD_MKBOOTIMG_ARGS  := --ramdisk_offset 0x02000000
 
 # Dumpstate
@@ -84,10 +77,10 @@ WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
 WIFI_DRIVER_MODULE_NAME          := "wlan"
 WIFI_DRIVER_FW_PATH_STA          := "sta"
 WIFI_DRIVER_FW_PATH_AP           := "ap"
-
 BOARD_USE_SONY_MACUPDATE := true
 
-BOARD_HARDWARE_CLASS := device/sony/huashan/cmhw
+# Hardware Class
+BOARD_HARDWARE_CLASS := device/sony/nicki/cmhw
 
 # Camera
 TARGET_PROVIDES_CAMERA_HAL := true
@@ -101,25 +94,22 @@ TARGET_NO_RPC := true
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/sony/huashan/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/sony/nicki/bluetooth
 
 # Time
 BOARD_USES_QC_TIME_SERVICES := true
 
 # Vold
+BOARD_VOLD_MAX_PARTITIONS := 27
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
 
-# Custom boot
+# Recovery
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-BOARD_CUSTOM_BOOTIMG_MK := device/sony/huashan/custombootimg.mk
+BOARD_CUSTOM_BOOTIMG_MK := device/sony/nicki/custombootimg.mk
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
-
-TARGET_RECOVERY_FSTAB := device/sony/huashan/rootdir/fstab.qcom
+TARGET_RECOVERY_FSTAB := device/sony/nicki/rootdir/fstab.qcom
 RECOVERY_FSTAB_VERSION := 2
-
-BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_HAS_NO_SELECT_BUTTON := true
-TARGET_USERIMAGES_USE_EXT4 := true
 
 # QCOM/CAF hardware
 BOARD_USES_QCOM_HARDWARE := true
@@ -142,7 +132,7 @@ TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 USE_OPENGL_RENDERER := true
 TARGET_USES_ION := true
 TARGET_USES_C2D_COMPOSITION := true
-BOARD_EGL_CFG := device/sony/huashan/rootdir/system/lib/egl/egl.cfg
+BOARD_EGL_CFG := device/sony/nicki/rootdir/system/lib/egl/egl.cfg
 
 # Lights HAL
 TARGET_PROVIDES_LIBLIGHT := true
@@ -159,16 +149,16 @@ BOARD_USES_QCOM_RIL_RESPONSE_5_ELEMENTS := true
 ENABLE_WEBGL := true
 TARGET_FORCE_CPU_UPLOAD := true
 
-# Partition information
-BOARD_VOLD_MAX_PARTITIONS := 26
-
+# Partition info
+TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 0x01400000
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x01400000
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1056964608
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 2147483648
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1258291200
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 2235547136
+BOARD_FLASH_BLOCK_SIZE := 131072
 
 BOARD_SEPOLICY_DIRS += \
-    device/sony/huashan/sepolicy
+    device/sony/nicki/sepolicy
 
 BOARD_SEPOLICY_UNION += \
     file_contexts \

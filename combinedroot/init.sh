@@ -26,14 +26,19 @@ busybox mknod -m 666 /dev/null c 1 3
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
 
-# trigger amber LED
-busybox echo 255 > ${BOOTREC_LED_RED}
-busybox echo 0 > ${BOOTREC_LED_GREEN}
-busybox echo 255 > ${BOOTREC_LED_BLUE}
+# trigger ON amber LED
+busybox echo ${BOOTREC_RED_LED_ON} > ${BOOTREC_CONTROL_LED}
+busybox echo ${BOOTREC_GREEN_LED_OFF} > ${BOOTREC_CONTROL_LED}
+busybox echo ${BOOTREC_BLUE_LED_ON} > ${BOOTREC_CONTROL_LED}
 
 # keycheck
 busybox cat ${BOOTREC_EVENT} > /dev/keycheck&
 busybox sleep 3
+
+# trigger OFF amber LED
+busybox echo ${BOOTREC_RED_LED_OFF} > ${BOOTREC_CONTROL_LED}
+busybox echo ${BOOTREC_GREEN_LED_OFF} > ${BOOTREC_CONTROL_LED}
+busybox echo ${BOOTREC_BLUE_LED_OFF} > ${BOOTREC_CONTROL_LED}
 
 # android ramdisk
 load_image=/sbin/ramdisk.cpio
@@ -41,10 +46,10 @@ load_image=/sbin/ramdisk.cpio
 # boot decision
 if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; then
 	busybox echo 'RECOVERY BOOT' >>boot.txt
-	# orange led for recoveryboot
-	busybox echo 255 > ${BOOTREC_LED_RED}
-	busybox echo 100 > ${BOOTREC_LED_GREEN}
-	busybox echo 0 > ${BOOTREC_LED_BLUE}
+	# cyan led for recoveryboot
+	busybox echo ${BOOTREC_RED_LED_OFF} > ${BOOTREC_CONTROL_LED}
+	busybox echo ${BOOTREC_GREEN_LED_ON} > ${BOOTREC_CONTROL_LED}
+	busybox echo ${BOOTREC_BLUE_LED_ON} > ${BOOTREC_CONTROL_LED}
 	# recovery ramdisk
 	busybox mknod -m 600 ${BOOTREC_FOTA_NODE}
 	busybox mount -o remount,rw /
@@ -55,9 +60,9 @@ if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; t
 else
 	busybox echo 'ANDROID BOOT' >>boot.txt
 	# poweroff LED
-	busybox echo 0 > ${BOOTREC_LED_RED}
-	busybox echo 0 > ${BOOTREC_LED_GREEN}
-	busybox echo 0 > ${BOOTREC_LED_BLUE}
+	busybox echo ${BOOTREC_RED_LED_OFF} > ${BOOTREC_CONTROL_LED}
+	busybox echo ${BOOTREC_GREEN_LED_OFF} > ${BOOTREC_CONTROL_LED}
+	busybox echo ${BOOTREC_BLUE_LED_OFF} > ${BOOTREC_CONTROL_LED}
 fi
 
 # kill the keycheck process
