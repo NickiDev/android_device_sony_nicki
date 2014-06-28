@@ -26,18 +26,7 @@ TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
 COMMON_GLOBAL_CFLAGS += -D__ARM_USE_PLD -D__ARM_CACHE_LINE_SIZE=64
 
 # Architecture
-TARGET_ARCH := arm
-TARGET_CPU_ABI := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
-TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_CPU_SMP := true
-TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_CPU_VARIANT := krait
-
-# Misc
-TARGET_NO_BOOTLOADER := true
-TARGET_NO_RADIOIMAGE := true
-BOARD_HAS_NO_MISC_PARTITION := true
 
 # Kernel properties
 TARGET_KERNEL_SOURCE := kernel/sony/msm8x27
@@ -82,16 +71,11 @@ BOARD_USE_SONY_MACUPDATE := true
 # Hardware Class
 BOARD_HARDWARE_CLASS := device/sony/nicki/cmhw
 
-# Camera
-TARGET_PROVIDES_CAMERA_HAL := true
-COMMON_GLOBAL_CFLAGS += -DDISABLE_HW_ID_MATCH_CHECK
-
 # GPS
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
 TARGET_NO_RPC := true
 
 # Bluetooth
-BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/sony/nicki/bluetooth
@@ -110,40 +94,18 @@ BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
 TARGET_RECOVERY_FSTAB := device/sony/nicki/rootdir/root/fstab.qcom
 RECOVERY_FSTAB_VERSION := 2
 BOARD_HAS_NO_SELECT_BUTTON := true
-
-# QCOM/CAF hardware
-BOARD_USES_QCOM_HARDWARE := true
-TARGET_QCOM_AUDIO_VARIANT := caf
-TARGET_QCOM_DISPLAY_VARIANT := caf
-TARGET_QCOM_MEDIA_VARIANT := caf
-TARGET_USES_QCOM_BSP := true
-COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE
+BOARD_CUSTOM_GRAPHICS := ../../../device/sony/nicki/recovery/graphics.c
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/sony/nicki/recovery/recovery_keys.c
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
-TARGET_USES_QCOM_COMPRESSED_AUDIO := true
-TARGET_USES_QCOM_MM_AUDIO := true
-TARGET_LS_USE_ALS_NODE := true
-
-# QCOM enhanced A/V
-TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
+BOARD_USES_LEGACY_ALSA_AUDIO := true
 
 # Display
-USE_OPENGL_RENDERER := true
-TARGET_USES_ION := true
-TARGET_USES_C2D_COMPOSITION := true
 BOARD_EGL_CFG := device/sony/nicki/rootdir/system/lib/egl/egl.cfg
 
 # Lights HAL
 TARGET_PROVIDES_LIBLIGHT := true
-
-# PowerHAL
-TARGET_USES_CM_POWERHAL := true
-CM_POWERHAL_EXTENSION := qcom
-
-# RIL
-BOARD_PROVIDES_LIBRIL := true
-BOARD_USES_QCOM_RIL_RESPONSE_5_ELEMENTS := true
 
 # Webkit
 ENABLE_WEBGL := true
@@ -156,35 +118,3 @@ BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x01400000
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1258291200
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 2235547136
 BOARD_FLASH_BLOCK_SIZE := 131072
-
-BOARD_SEPOLICY_DIRS += \
-    device/sony/nicki/sepolicy
-
-BOARD_SEPOLICY_UNION += \
-    file_contexts \
-    property_contexts \
-    te_macros \
-    bluetooth_loader.te \
-    bridge.te \
-    camera.te \
-    device.te \
-    dhcp.te \
-    domain.te \
-    drmserver.te \
-    file.te \
-    kickstart.te \
-    init.te \
-    mac_update.te \
-    mediaserver.te \
-    mpdecision.te \
-    netmgrd.te \
-    qmux.te \
-    rild.te \
-    rmt.te \
-    surfaceflinger.te \
-    system.te \
-    tee.te \
-    thermald.te \
-    ueventd.te \
-    vold.te \
-    wpa_supplicant.te
