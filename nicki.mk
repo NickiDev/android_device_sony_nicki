@@ -158,13 +158,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.accept:system/etc/hostapd/hostapd.accept \
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.deny:system/etc/hostapd/hostapd.deny
 
-# FirefoxOS
-PRODUCT_COPY_FILES += \
-    device/sony/nicki/rootdir/system/etc/volume.cfg:system/etc/volume.cfg
-
-# for Gaia - set default scale value
-GAIA_DEV_PIXELS_PER_PX = 2.0
-
 # SoftAP
 PRODUCT_PACKAGES += \
     libQWiFiSoftApCfg \
