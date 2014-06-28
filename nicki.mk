@@ -45,6 +45,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/root/init.qcom.rc:root/init.qcom.rc \
     $(LOCAL_PATH)/rootdir/root/init.target.rc:root/init.target.rc \
     $(LOCAL_PATH)/rootdir/root/fstab.qcom:root/fstab.qcom \
+    $(LOCAL_PATH)/rootdir/root/fstab.qcom:recovery/root/fstab.qcom \
     $(LOCAL_PATH)/rootdir/root/ueventd.qcom.rc:root/ueventd.qcom.rc \
     $(LOCAL_PATH)/rootdir/root/init.qcom.usb.rc:root/init.qcom.usb.rc \
     $(LOCAL_PATH)/rootdir/root/init.recovery.qcom.rc:root/init.recovery.qcom.rc
@@ -148,15 +149,6 @@ PRODUCT_COPY_FILES += \
 # Touchpad
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/system/usr/idc/clearpad.idc:system/usr/idc/clearpad.idc
-
-# USB function switching
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.sony.usb.rc:root/init.sony.usb.rc
-
-# Vold
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/fstab.qcom:root/fstab.qcom \
-    $(LOCAL_PATH)/rootdir/fstab.qcom:recovery/root/fstab.qcom
 
 # Wifi Config
 PRODUCT_COPY_FILES += \
