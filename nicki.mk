@@ -15,7 +15,7 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Inherit qcom-common files.
-$(call inherit-product, device/sony/qcom-common/qcom-common.mk)
+$(call inherit-product, device/sony/qcom-common/qcom-common-adreno.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/sony/nicki/overlay
 
@@ -98,14 +98,9 @@ PRODUCT_COPY_FILES += \
    $(LOCAL_PATH)/rootdir/system/etc/sec_config:system/etc/sec_config
 
 PRODUCT_COPY_FILES += \
-<<<<<<< HEAD:nicki.mk
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd_default.conf:system/etc/hostapd/hostapd_default.conf \
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.accept:system/etc/hostapd/hostapd.accept \
     $(LOCAL_PATH)/rootdir/system/etc/hostapd/hostapd.deny:system/etc/hostapd/hostapd.deny
-
-=======
-    $(LOCAL_PATH)/rootdir/system/etc/media_profiles.xml:system/etc/media_profiles.xml
->>>>>>> parent of ea4f313... Import everything from qcom-common:huashan.mk
 
 # NFC
 PRODUCT_COPY_FILES += \
@@ -261,10 +256,4 @@ PRODUCT_PROPERTY_OVERRIDES += \
 $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 
 # Include non-opensource parts/ proprietary files
-<<<<<<< HEAD:nicki.mk
 $(call inherit-product, vendor/sony/nicki/nicki-vendor.mk)
-=======
-$(call inherit-product, vendor/sony/huashan/huashan-vendor.mk)
-# Include own Adreno blobs
-$(call inherit-product, vendor/sony/huashan/huashan-adreno-blobs.mk)
->>>>>>> parent of ea4f313... Import everything from qcom-common:huashan.mk

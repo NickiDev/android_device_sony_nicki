@@ -15,6 +15,9 @@
 # inherit from Sony common
 -include device/sony/common/BoardConfigCommon.mk
 
+# inherit from sony qcom-common
+-include device/sony/qcom-common/BoardConfigCommon.mk
+
 # inherit from the proprietary version
 -include vendor/sony/nicki/BoardConfigVendor.mk
 
