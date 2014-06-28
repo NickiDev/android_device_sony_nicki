@@ -17,6 +17,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 # Inherit qcom-common files.
 $(call inherit-product, device/sony/qcom-common/qcom-common-adreno.mk)
 
+# Inherit sony common
+$(call inherit-product, device/sony/common/resources.mk)
+
 DEVICE_PACKAGE_OVERLAYS += device/sony/nicki/overlay
 
 # Permissions
