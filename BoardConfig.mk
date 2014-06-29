@@ -15,8 +15,6 @@
 # inherit from Sony common
 include device/sony/common/BoardConfigCommon.mk
 
-BOARD_EGL_CFG := device/sony/nicki/rootdir/system/lib/egl/egl.cfg
-
 # inherit from qcom-common
 include device/sony/qcom-common/BoardConfigCommon.mk
 
@@ -81,9 +79,10 @@ BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
 TARGET_NO_RPC := true
 
 # Bluetooth
-#BOARD_HAVE_BLUETOOTH_QCOM := true
-#BLUETOOTH_HCI_USE_MCT := true
-#BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/sony/nicki/bluetooth
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_QCOM := true
+BLUETOOTH_HCI_USE_MCT := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/sony/c1905/bluetooth
 
 # Time
 BOARD_USES_QC_TIME_SERVICES := true
@@ -100,6 +99,7 @@ TARGET_RECOVERY_FSTAB := device/sony/nicki/rootdir/root/fstab.qcom
 RECOVERY_FSTAB_VERSION := 2
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/sony/nicki/recovery/recovery_keys.c
+BOARD_CUSTOM_GRAPHICS := ../../../device/sony/nicki/recovery/graphics.c
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
@@ -108,8 +108,9 @@ BOARD_USES_LEGACY_ALSA_AUDIO := true
 # Display
 BOARD_EGL_CFG := device/sony/nicki/rootdir/system/lib/egl/egl.cfg
 
-# Lights HAL
-TARGET_PROVIDES_LIBLIGHT := true
+# QCOM BSP
+TARGET_USES_QCOM_BSP := true
+COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
 
 # Webkit
 ENABLE_WEBGL := true
