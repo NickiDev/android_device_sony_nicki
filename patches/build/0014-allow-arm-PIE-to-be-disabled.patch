@@ -1,0 +1,33 @@
+From 110cfca8f3147c2ad49a195f0312a3df1eed2717 Mon Sep 17 00:00:00 2001
+From: Anthony King <anthonydking@gmail.com>
+Date: Thu, 6 Nov 2014 15:49:57 +0000
+Subject: [PATCH] allow arm PIE to be disabled
+
+Change-Id: Ida4db6eae1d6b83356b0453dafa74736bb7024e8
+---
+ core/combo/TARGET_linux-arm.mk | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/core/combo/TARGET_linux-arm.mk b/core/combo/TARGET_linux-arm.mk
+index 95b1804..52573b4 100644
+--- a/core/combo/TARGET_linux-arm.mk
++++ b/core/combo/TARGET_linux-arm.mk
+@@ -218,8 +218,14 @@ $(hide) $(PRIVATE_CXX) \
+ 	$(PRIVATE_LDLIBS)
+ endef
+ 
++ifeq ($(TARGET_DISABLE_ARM_PIE),true)
++   PIE_EXECUTABLE_TRANSFORM := -Wl,-T,$(BUILD_SYSTEM)/armelf.x
++else
++   PIE_EXECUTABLE_TRANSFORM := -pie
++endif
++
+ define $(combo_2nd_arch_prefix)transform-o-to-executable-inner
+-$(hide) $(PRIVATE_CXX) -nostdlib -Bdynamic -pie \
++$(hide) $(PRIVATE_CXX) -nostdlib -Bdynamic $(PIE_EXECUTABLE_TRANSFORM) \
+ 	-Wl,-dynamic-linker,/system/bin/linker \
+ 	-Wl,--gc-sections \
+ 	-Wl,-z,nocopyreloc \
+-- 
+2.1.0
+

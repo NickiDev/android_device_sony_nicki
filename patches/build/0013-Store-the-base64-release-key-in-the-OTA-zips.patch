@@ -1,0 +1,75 @@
+From ba610869c36e2c166e708831b917ba6dd8818007 Mon Sep 17 00:00:00 2001
+From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Date: Wed, 7 May 2014 17:28:49 +0100
+Subject: [PATCH] Store the base64 release key in the OTA zips
+
+This can be directly grepped in pre-existing package.xml tables
+to make sure we're not trying to update to a differently signed
+build
+
+Change-Id: I7528a8e7c484ea9209cd665b9263328ae834586a
+---
+ core/Makefile                             | 5 +++++
+ tools/releasetools/ota_from_target_files  | 3 ++-
+ tools/releasetools/sign_target_files_apks | 8 ++++++++
+ 3 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/core/Makefile b/core/Makefile
+index b0feecf..1c14b12 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -1465,6 +1465,11 @@ ifneq ($(OEM_THUMBPRINT_PROPERTIES),)
+ endif
+ 	$(call generate-userimage-prop-dictionary, $(zip_root)/META/misc_info.txt)
+ 	$(hide) ./build/tools/releasetools/make_recovery_patch $(zip_root) $(zip_root)
++ifdef PRODUCT_DEFAULT_DEV_CERTIFICATE
++	$(hide) build/tools/getb64key.py $(PRODUCT_DEFAULT_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
++else
++	$(hide) build/tools/getb64key.py $(DEFAULT_SYSTEM_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
++endif
+ 	@# Zip everything up, preserving symlinks
+ 	$(hide) (cd $(zip_root) && zip -qry ../$(notdir $@) .)
+ 	@# Run fs_config on all the system, vendor, boot ramdisk,
+diff --git a/tools/releasetools/ota_from_target_files b/tools/releasetools/ota_from_target_files
+index 755e5c2..81caf21 100755
+--- a/tools/releasetools/ota_from_target_files
++++ b/tools/releasetools/ota_from_target_files
+@@ -644,6 +644,8 @@ endif;
+   script.AddToZip(input_zip, output_zip, input_path=OPTIONS.updater_binary)
+   WriteMetadata(metadata, output_zip)
+ 
++  common.ZipWriteStr(output_zip, "META-INF/org/cyanogenmod/releasekey",
++                     ""+input_zip.read("META/releasekey.txt"))
+ 
+ def WritePolicyConfig(file_context, output_zip):
+   f = open(file_context, 'r');
+@@ -1378,7 +1380,6 @@ endif;
+ 
+   WriteMetadata(metadata, output_zip)
+ 
+-
+ def main(argv):
+ 
+   def option_handler(o, a):
+diff --git a/tools/releasetools/sign_target_files_apks b/tools/releasetools/sign_target_files_apks
+index 075c925..b5ac20c 100755
+--- a/tools/releasetools/sign_target_files_apks
++++ b/tools/releasetools/sign_target_files_apks
+@@ -374,6 +374,14 @@ def ReplaceOtaKeys(input_tf_zip, output_tf_zip, misc_info):
+   common.ZipWriteStr(output_tf_zip, "RECOVERY/RAMDISK/res/keys",
+                      new_recovery_keys)
+ 
++  # Save the base64 key representation in the update for key-change
++  # validations
++  p = common.Run(["python", "build/tools/getb64key.py", mapped_keys[0]],
++                 stdout=subprocess.PIPE)
++  data, _ = p.communicate()
++  if p.returncode == 0:
++    common.ZipWriteStr(output_tf_zip, "META/releasekey.txt", data)
++
+   # SystemUpdateActivity uses the x509.pem version of the keys, but
+   # put into a zipfile system/etc/security/otacerts.zip.
+   # We DO NOT include the extra_recovery_keys (if any) here.
+-- 
+2.1.0
+
