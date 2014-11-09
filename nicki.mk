@@ -48,6 +48,9 @@ DEVICE_PACKAGE_OVERLAYS := device/sony/nicki/overlay
 PRODUCT_TAGS += dalvik.gc.type-precise
 
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/root/logo.rle:root/logo.rle \
+
+PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/root/init.qcom.rc:root/init.qcom.rc \
     $(LOCAL_PATH)/rootdir/root/init.target.rc:root/init.target.rc \
     $(LOCAL_PATH)/rootdir/root/fstab.qcom:root/fstab.qcom \
@@ -100,6 +103,27 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/system/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini:system/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini
+
+# Offline charging animation
+PRODUCT_COPY_FILES += \
+     $(LOCAL_PATH)/charger/charging_animation_01.png:system/semc/chargemon/data/charging_animation_01.png \
+     $(LOCAL_PATH)/charger/charging_animation_02.png:system/semc/chargemon/data/charging_animation_02.png \
+     $(LOCAL_PATH)/charger/charging_animation_03.png:system/semc/chargemon/data/charging_animation_03.png \
+     $(LOCAL_PATH)/charger/charging_animation_04.png:system/semc/chargemon/data/charging_animation_04.png \
+     $(LOCAL_PATH)/charger/charging_animation_05.png:system/semc/chargemon/data/charging_animation_05.png \
+     $(LOCAL_PATH)/charger/charging_animation_06.png:system/semc/chargemon/data/charging_animation_06.png \
+     $(LOCAL_PATH)/charger/charging_animation_07.png:system/semc/chargemon/data/charging_animation_07.png \
+     $(LOCAL_PATH)/charger/non-charging_animation_01.png:system/semc/chargemon/data/non-charging_animation_01.png \
+     $(LOCAL_PATH)/charger/non-charging_animation_02.png:system/semc/chargemon/data/non-charging_animation_02.png \
+     $(LOCAL_PATH)/charger/non-charging_animation_03.png:system/semc/chargemon/data/non-charging_animation_03.png \
+     $(LOCAL_PATH)/charger/non-charging_animation_04.png:system/semc/chargemon/data/non-charging_animation_04.png \
+     $(LOCAL_PATH)/charger/non-charging_animation_05.png:system/semc/chargemon/data/non-charging_animation_05.png \
+     $(LOCAL_PATH)/charger/non-charging_animation_06.png:system/semc/chargemon/data/non-charging_animation_06.png \
+     $(LOCAL_PATH)/charger/non-charging_animation_07.png:system/semc/chargemon/data/non-charging_animation_07.pn
+
+# For formatting data after unlock
+PRODUCT_PACKAGES += \
+    setup_fs
 
 PRODUCT_PACKAGES += \
     charger \
