@@ -21,7 +21,7 @@ include vendor/sony/nicki/BoardConfigVendor.mk
 # inherit from msm8960-common
 include device/sony/msm8960-common/BoardConfigCommon.mk
 
-USE_CAMERA_STUB := false
+#USE_CAMERA_STUB := false
 
 TARGET_SPECIFIC_HEADER_PATH += device/sony/nicki/include
 
@@ -74,7 +74,7 @@ TARGET_DISPLAY_USE_RETIRE_FENCE := true
 #BOARD_USES_LEGACY_ALSA_AUDIO := true
 
 # camera
-USE_DEVICE_SPECIFIC_CAMERA := true
+#USE_DEVICE_SPECIFIC_CAMERA := true
 
 # legacy Ril
 BOARD_HAS_RIL_LEGACY_PAP := true
