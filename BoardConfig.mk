@@ -18,9 +18,6 @@ BOARD_EGL_CFG := device/sony/nicki/rootdir/system/lib/egl/egl.cfg
 
 include vendor/sony/nicki/BoardConfigVendor.mk
 
-# inherit from Sony common
-include device/sony/common/BoardConfigCommon.mk
-
 # inherit from msm8960-common
 include device/sony/msm8960-common/BoardConfigCommon.mk
 
