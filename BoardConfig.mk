@@ -75,7 +75,7 @@ BOARD_USES_LEGACY_ALSA_AUDIO := true
 # camera
 USE_DEVICE_SPECIFIC_CAMERA := true
 
-# Legacy Ril
+# legacy Ril
 BOARD_HAS_RIL_LEGACY_PAP := true
 
 # Wlan
