@@ -104,3 +104,6 @@ BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/sony/nicki/recovery/recovery_keys.c
 TARGET_RECOVERY_LCD_BACKLIGHT_PATH := \"/sys/class/leds/lcd-backlight/brightness\"
+
+# QC AV Enhancements
+TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
