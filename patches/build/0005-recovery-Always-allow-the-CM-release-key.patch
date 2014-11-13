@@ -1,7 +1,7 @@
-From 410886442e208d7f14b99bbef26be76b6f0487c9 Mon Sep 17 00:00:00 2001
+From 13392106c31c7d357239bcc9b03bd47c2de1f7b3 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Wed, 3 Jul 2013 23:06:02 +0100
-Subject: [PATCH] recovery: Always allow the CM release key
+Subject: [PATCH 05/18] recovery: Always allow the CM release key
 
 Avoid the "Untrusted" warning in recovery when flashing a CM-signed
 build
@@ -14,10 +14,10 @@ Change-Id: I13900bd7e2539fdc7442477a844391b8c5d87dda
  create mode 100644 target/product/security/cm.x509.pem
 
 diff --git a/core/Makefile b/core/Makefile
-index 2871363..b0feecf 100644
+index c7e4563..6d8adef 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -835,6 +835,8 @@ ifneq ($(OTA_PACKAGE_SIGNING_KEY),)
+@@ -824,6 +824,8 @@ ifneq ($(OTA_PACKAGE_SIGNING_KEY),)
      PRODUCT_EXTRA_RECOVERY_KEYS := $(DEFAULT_SYSTEM_DEV_CERTIFICATE)
  endif
  

@@ -1,7 +1,7 @@
-From fece3bc5aafc5143e96a696adc252758987411de Mon Sep 17 00:00:00 2001
+From 3a012f13f8c9d689d9a7011f629f18f9f9635106 Mon Sep 17 00:00:00 2001
 From: Arnav Gosain <gosain.arnav@gmail.com>
 Date: Fri, 7 Nov 2014 17:12:55 -0500
-Subject: [PATCH] Kernel as buildtime task
+Subject: [PATCH 03/18] Kernel as buildtime task
 
 Change-Id: Idabc3484ee4f79ed08364f16076cda4b015f0e22
 ---

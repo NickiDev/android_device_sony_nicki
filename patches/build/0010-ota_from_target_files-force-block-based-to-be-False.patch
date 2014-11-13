@@ -1,7 +1,7 @@
-From d7fc2458319262f6b3355b0679f81b1493f7040b Mon Sep 17 00:00:00 2001
+From 7dbd18efd1566fa0f26529dc28a49f5fcd9d4bb1 Mon Sep 17 00:00:00 2001
 From: dhacker29 <dhackerdvm@gmail.com>
 Date: Thu, 6 Nov 2014 03:01:07 -0500
-Subject: [PATCH] ota_from_target_files: force block based to be False
+Subject: [PATCH 10/18] ota_from_target_files: force block based to be False
 
 We want a zip that has system files not an image
 ---
@@ -9,10 +9,10 @@ We want a zip that has system files not an image
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/releasetools/ota_from_target_files b/tools/releasetools/ota_from_target_files
-index da34dde..aaa3e2b 100755
+index 4d6602e..7dd85e1 100755
 --- a/tools/releasetools/ota_from_target_files
 +++ b/tools/releasetools/ota_from_target_files
-@@ -1440,7 +1440,7 @@ def main(argv):
+@@ -1421,7 +1421,7 @@ def main(argv):
      elif o in ("--verify"):
        OPTIONS.verify = True
      elif o == "--block":

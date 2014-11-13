@@ -1,0 +1,25 @@
+From c13735361b512cb3834f6dea6411a5c7817c687f Mon Sep 17 00:00:00 2001
+From: Koushik Dutta <koushd@gmail.com>
+Date: Mon, 7 Mar 2011 19:48:45 -0800
+Subject: [PATCH 15/18] fix up ota_from_target_files symlink detection.
+
+---
+ tools/releasetools/ota_from_target_files | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/releasetools/ota_from_target_files b/tools/releasetools/ota_from_target_files
+index 457b7eb..a016958 100755
+--- a/tools/releasetools/ota_from_target_files
++++ b/tools/releasetools/ota_from_target_files
+@@ -142,7 +142,7 @@ def MostPopularKey(d, default):
+ def IsSymlink(info):
+   """Return true if the zipfile.ZipInfo object passed in represents a
+   symlink."""
+-  return (info.external_attr >> 16) == 0120777
++  return (info.external_attr >> 16) & 0770000 == 0120000
+ 
+ def IsRegular(info):
+   """Return true if the zipfile.ZipInfo object passed in represents a
+-- 
+2.1.0
+

@@ -1,7 +1,7 @@
-From e3654c0de083c3d96a1d70f18550b964308a5c93 Mon Sep 17 00:00:00 2001
+From 97070bd040bce69364b350677bd7f7903aa75164 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 12 Apr 2011 10:57:22 +0100
-Subject: [PATCH] Allow a device to generically define its own headers
+Subject: [PATCH 11/18] Allow a device to generically define its own headers
 
 We have a few cases of devices including specific versions of projects
 just because of modified headers (msm_mdp.h comes to mind), and I just
@@ -20,7 +20,6 @@ hardware/libhardware_legacy/include/hardware_legacy/AudioHardwareInterface.h
 whenever a source file uses <hardware_legacy/AudioHardwareInterface.h>
 
 Change-Id: I41b62668b60e3f62a6ebd3738d8d2675103a81e6a
-
 ---
  core/binary.mk | 5 +++++
  1 file changed, 5 insertions(+)

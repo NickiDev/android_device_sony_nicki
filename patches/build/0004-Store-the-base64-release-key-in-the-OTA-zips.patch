@@ -1,7 +1,7 @@
-From ba610869c36e2c166e708831b917ba6dd8818007 Mon Sep 17 00:00:00 2001
+From 9973109664932eacfcf2095ec597fa802c9012c0 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Wed, 7 May 2014 17:28:49 +0100
-Subject: [PATCH] Store the base64 release key in the OTA zips
+Subject: [PATCH 04/18] Store the base64 release key in the OTA zips
 
 This can be directly grepped in pre-existing package.xml tables
 to make sure we're not trying to update to a differently signed
@@ -15,10 +15,10 @@ Change-Id: I7528a8e7c484ea9209cd665b9263328ae834586a
  3 files changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/core/Makefile b/core/Makefile
-index b0feecf..1c14b12 100644
+index 6d8adef..4dfab09 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -1465,6 +1465,11 @@ ifneq ($(OEM_THUMBPRINT_PROPERTIES),)
+@@ -1454,6 +1454,11 @@ ifneq ($(OEM_THUMBPRINT_PROPERTIES),)
  endif
  	$(call generate-userimage-prop-dictionary, $(zip_root)/META/misc_info.txt)
  	$(hide) ./build/tools/releasetools/make_recovery_patch $(zip_root) $(zip_root)
@@ -31,10 +31,10 @@ index b0feecf..1c14b12 100644
  	$(hide) (cd $(zip_root) && zip -qry ../$(notdir $@) .)
  	@# Run fs_config on all the system, vendor, boot ramdisk,
 diff --git a/tools/releasetools/ota_from_target_files b/tools/releasetools/ota_from_target_files
-index 755e5c2..81caf21 100755
+index 7dd85e1..5219667 100755
 --- a/tools/releasetools/ota_from_target_files
 +++ b/tools/releasetools/ota_from_target_files
-@@ -644,6 +644,8 @@ endif;
+@@ -651,6 +651,8 @@ endif;
    script.AddToZip(input_zip, output_zip, input_path=OPTIONS.updater_binary)
    WriteMetadata(metadata, output_zip)
  
@@ -43,7 +43,7 @@ index 755e5c2..81caf21 100755
  
  def WritePolicyConfig(file_context, output_zip):
    f = open(file_context, 'r');
-@@ -1378,7 +1380,6 @@ endif;
+@@ -1385,7 +1387,6 @@ endif;
  
    WriteMetadata(metadata, output_zip)
  

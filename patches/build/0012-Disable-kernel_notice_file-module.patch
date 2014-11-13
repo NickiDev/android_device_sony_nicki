@@ -1,17 +1,17 @@
-From 7d11348747f2cd510e70d4870b5165ae9b8eac8c Mon Sep 17 00:00:00 2001
+From 4be1d704ef6ea4abc5c02732b7070f8c7c1248aa Mon Sep 17 00:00:00 2001
 From: streambinder <davidepucci@hiddenhost.org>
 Date: Sat, 14 Jun 2014 17:45:19 +0200
-Subject: [PATCH 4/4] Disable kernel_notice_file module
+Subject: [PATCH 12/18] Disable kernel_notice_file module
 
 ---
  core/Makefile | 13 +------------
  1 file changed, 1 insertion(+), 12 deletions(-)
 
 diff --git a/core/Makefile b/core/Makefile
-index 27f22a9..e4a8dfa 100644
+index 53c60f1..34dd568 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -508,7 +508,6 @@ tools_notice_file_txt := $(HOST_OUT_INTERMEDIATES)/NOTICE.txt
+@@ -599,7 +599,6 @@ tools_notice_file_txt := $(HOST_OUT_INTERMEDIATES)/NOTICE.txt
  tools_notice_file_html := $(HOST_OUT_INTERMEDIATES)/NOTICE.html
  
  ifndef TARGET_BUILD_APPS
@@ -19,7 +19,7 @@ index 27f22a9..e4a8dfa 100644
  pdk_fusion_notice_files := $(filter $(TARGET_OUT_NOTICE_FILES)/%, $(ALL_PDK_FUSION_FILES))
  
  $(eval $(call combine-notice-files, \
-@@ -516,7 +515,7 @@ $(eval $(call combine-notice-files, \
+@@ -607,7 +606,7 @@ $(eval $(call combine-notice-files, \
  			$(target_notice_file_html), \
  			"Notices for files contained in the filesystem images in this directory:", \
  			$(TARGET_OUT_NOTICE_FILES), \
@@ -28,7 +28,7 @@ index 27f22a9..e4a8dfa 100644
  
  $(eval $(call combine-notice-files, \
  			$(tools_notice_file_txt), \
-@@ -542,16 +541,6 @@ ALL_DEFAULT_INSTALLED_MODULES += $(installed_notice_html_gz)
+@@ -633,16 +632,6 @@ ALL_DEFAULT_INSTALLED_MODULES += $(installed_notice_html_gz)
  endif
  endif  # TARGET_BUILD_APPS
  
@@ -46,5 +46,5 @@ index 27f22a9..e4a8dfa 100644
  # -----------------------------------------------------------------
  # Build a keystore with the authorized keys in it, used to verify the
 -- 
-1.8.3.2
+2.1.0
 

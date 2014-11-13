@@ -1,14 +1,13 @@
-From 53ff41b8c11030649af759877d90eecdd31e593f Mon Sep 17 00:00:00 2001
+From 8077d956a7d6a01c304ab2b580a89796b5904727 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Wed, 21 Apr 2010 11:39:48 -0400
-Subject: [PATCH] Allow override of device asserts, including multi-device
- support.
+Subject: [PATCH 01/18] Allow override of device asserts, including
+ multi-device support.
 
 Set in board file with TARGET_OTA_ASSERT_DEVICE.
 (cherry-picked from commit 0f452f21fc9323b9d1fe746161761cf40aaa5030)
 
 Change-Id: I3d06bdc0e3e26bde0c0e646accd050364f9713b9
-
 ---
  core/Makefile                            |  7 +++++++
  tools/releasetools/edify_generator.py    | 10 +++++-----

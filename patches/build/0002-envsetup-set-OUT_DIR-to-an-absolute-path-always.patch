@@ -1,7 +1,7 @@
-From 664c47ba20d6bdc29e13961d885cb33b2176a260 Mon Sep 17 00:00:00 2001
+From f050a7c7ae5f8a8ef91700462c8875398b5196fa Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Thu, 27 Sep 2012 18:11:25 +0530
-Subject: [PATCH] envsetup: set OUT_DIR to an absolute path always
+Subject: [PATCH 02/18] envsetup: set OUT_DIR to an absolute path always
 
 OUT_DIR was set to $(TOPDIR)out previously,
 but $(TOPDIR) was null, so it was a relative path.
@@ -15,7 +15,6 @@ and changed it to $(ANDROID_BUILD_TOP)/out to workaround
 the aforementioned problem.
 
 Change-Id: I459a3b1325a1bbea0565cd73f6acf160d4ed9b39
-
 ---
  core/envsetup.mk | 4 ++++
  1 file changed, 4 insertions(+)

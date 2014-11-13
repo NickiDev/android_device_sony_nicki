@@ -1,7 +1,7 @@
-From 110cfca8f3147c2ad49a195f0312a3df1eed2717 Mon Sep 17 00:00:00 2001
+From 67873575adb1134fc59d2c2750237608d854e2f1 Mon Sep 17 00:00:00 2001
 From: Anthony King <anthonydking@gmail.com>
 Date: Thu, 6 Nov 2014 15:49:57 +0000
-Subject: [PATCH] allow arm PIE to be disabled
+Subject: [PATCH 13/18] allow arm PIE to be disabled
 
 Change-Id: Ida4db6eae1d6b83356b0453dafa74736bb7024e8
 ---

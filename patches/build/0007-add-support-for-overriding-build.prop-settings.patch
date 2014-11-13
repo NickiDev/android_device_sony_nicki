@@ -1,7 +1,7 @@
-From 0b36ab015340d772dbb86e756fd241751884dc08 Mon Sep 17 00:00:00 2001
+From a10536e15349b3ba8318153ccea0b04b6e277399 Mon Sep 17 00:00:00 2001
 From: Koushik Dutta <koushd@gmail.com>
 Date: Sat, 26 Jun 2010 22:53:55 -0700
-Subject: [PATCH] add support for overriding build.prop settings.
+Subject: [PATCH 07/18] add support for overriding build.prop settings.
 
 Change-Id: Ie4224d608b7bcb0c2087bd77bc954f8f5f9b6495
 ---
@@ -11,7 +11,7 @@ Change-Id: Ie4224d608b7bcb0c2087bd77bc954f8f5f9b6495
  3 files changed, 5 insertions(+)
 
 diff --git a/core/Makefile b/core/Makefile
-index 6d4495f..ae311e4 100644
+index 020137b..8538200 100644
 --- a/core/Makefile
 +++ b/core/Makefile
 @@ -227,6 +227,7 @@ endif

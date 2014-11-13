@@ -1,0 +1,37 @@
+From d083c42e7e3fc8c045592f0f9324703bbcf10895 Mon Sep 17 00:00:00 2001
+From: Koushik Dutta <koushd@gmail.com>
+Date: Wed, 16 Nov 2011 16:45:03 -0800
+Subject: [PATCH 18/18] recovery: build uncompressed ramdisk
+
+Change-Id: I6027868864ec2696f20705faf4c68c684e7ef459
+Signed-off-by: Chirayu Desai <chirayudesai1@gmail.com>
+---
+ core/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/core/Makefile b/core/Makefile
+index eb8b541..d9d9ec4 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -741,6 +741,7 @@ recovery_initrc := $(call include-path-for, recovery)/etc/init.rc
+ recovery_sepolicy := $(call intermediates-dir-for,ETC,sepolicy.recovery)/sepolicy.recovery
+ recovery_kernel := $(INSTALLED_KERNEL_TARGET) # same as a non-recovery system
+ recovery_ramdisk := $(PRODUCT_OUT)/ramdisk-recovery.img
++recovery_uncompressed_ramdisk := $(PRODUCT_OUT)/ramdisk-recovery.cpio
+ recovery_build_prop := $(INSTALLED_BUILD_PROP_TARGET)
+ recovery_binary := $(call intermediates-dir-for,EXECUTABLES,recovery)/recovery
+ recovery_resources_common := $(call include-path-for, recovery)/res
+@@ -876,6 +877,10 @@ $(recovery_ramdisk): $(MKBOOTFS) $(MINIGZIP) \
+ 	        > $(TARGET_RECOVERY_ROOT_OUT)/default.prop
+ 	$(hide) $(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) | $(MINIGZIP) > $(recovery_ramdisk)
+ 
++$(recovery_uncompressed_ramdisk): $(MINIGZIP) $(recovery_ramdisk)
++	@echo -e ${CL_CYN}"----- Making uncompressed recovery ramdisk ------"${CL_RST}
++	$(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) > $@
++
+ ifndef BOARD_CUSTOM_BOOTIMG_MK
+ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTIMG) $(recovery_ramdisk) \
+ 		$(recovery_kernel)
+-- 
+2.1.0
+

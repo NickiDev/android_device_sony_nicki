@@ -1,7 +1,7 @@
-From 99a7e98d343b94f316f0360c90512fb0884656cd Mon Sep 17 00:00:00 2001
+From 09d90e6eed6fc6f438b22655c9bf26b534f86fb9 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 1 Jul 2013 23:35:26 +0100
-Subject: [PATCH] Sign final packages with a different key if requested
+Subject: [PATCH 06/18] Sign final packages with a different key if requested
 
 ...and throw it into recovery builds as well
 
@@ -11,7 +11,7 @@ Change-Id: Ic96d4d49d821cb03d5318e3e9ad93d02fb92573e
  1 file changed, 8 insertions(+)
 
 diff --git a/core/Makefile b/core/Makefile
-index ae311e4..2871363 100644
+index 8538200..c7e4563 100644
 --- a/core/Makefile
 +++ b/core/Makefile
 @@ -367,6 +367,9 @@ endif
@@ -24,7 +24,7 @@ index ae311e4..2871363 100644
  
  # Rules that need to be present for the all targets, even
  # if they don't do anything.
-@@ -827,6 +830,11 @@ endif
+@@ -816,6 +819,11 @@ endif
  # substitute other keys for this one.
  OTA_PUBLIC_KEYS := $(DEFAULT_SYSTEM_DEV_CERTIFICATE).x509.pem
  
