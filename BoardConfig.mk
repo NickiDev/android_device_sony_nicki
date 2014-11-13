@@ -142,6 +142,8 @@ TARGET_LIBINIT_DEFINES_FILE := device/sony/nicki/init/init_nicki.c
 # Logd
 TARGET_USES_LOGD := false
 
+MALLOC_IMPL := dlmalloc
+
 # Sepolicy
 BOARD_SEPOLICY_DIRS += \
     device/sony/nicki/sepolicy
