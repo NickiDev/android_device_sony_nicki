@@ -67,16 +67,28 @@ TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/
 # QCOM Hardware
 BOARD_USES_QCOM_HARDWARE := true
 
+# Bionic
+TARGET_USE_QCOM_BIONIC_OPTIMIZATION := true
+
+# Enable Minikin text layout engine (will be the default soon)
+USE_MINIKIN := true
+
+# Include an expanded selection of fonts
+EXTENDED_FONT_FOOTPRINT := true
+
+# MMap compatibility
+BOARD_USES_LEGACY_MMAP := true
+
 # QCOM Display and Graphics
-TARGET_QCOM_DISPLAY_VARIANT := caf
-TARGET_QCOM_MEDIA_VARIANT := caf
 TARGET_USES_QCOM_BSP := true
 TARGET_DISPLAY_USE_RETIRE_FENCE := true
 
 # Audio
-TARGET_QCOM_AUDIO_VARIANT := caf
 BOARD_USES_ALSA_AUDIO := true
 BOARD_USES_LEGACY_ALSA_AUDIO := true
+TARGET_USES_QCOM_COMPRESSED_AUDIO := true
+QCOM_ANC_HEADSET_ENABLED := false
+QCOM_FLUENCE_ENABLED := false
 
 # QC AV Enhancements
 TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
@@ -87,8 +99,10 @@ BOARD_USES_QC_TIME_SERVICES := true
 # Camera
 USE_DEVICE_SPECIFIC_CAMERA := true
 
-# Legacy Ril
+# Ril
 BOARD_HAS_RIL_LEGACY_PAP := true
+BOARD_RIL_NO_CELLINFOLIST := true
+BOARD_RIL_NO_SEEK := true
 
 # Fm
 QCOM_FM_ENABLED := true
@@ -123,9 +137,13 @@ TARGET_RECOVERY_LCD_BACKLIGHT_PATH := \"/sys/class/leds/lcd-backlight/brightness
 # Override healthd HAL
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.qcom
 
+# Init
 TARGET_UNIFIED_DEVICE := true
 TARGET_INIT_VENDOR_LIB := libinit_nicki
 TARGET_LIBINIT_DEFINES_FILE := device/sony/nicki/init/init_nicki.c
+
+# Logd
+TARGET_USES_LOGD := false
 
 # Sepolicy
 BOARD_SEPOLICY_DIRS += \
@@ -147,8 +165,10 @@ BOARD_SEPOLICY_UNION += \
     kickstart.te \
     mediaserver.te \
     netd.te \
+    property.te \
+    property_contexts \
     rild.te \
     surfaceflinger.te \
-    system.te \
+    system_server.te \
     ueventd.te \
     wpa_supplicant.te
