@@ -105,7 +105,7 @@ BOARD_RIL_NO_CELLINFOLIST := true
 BOARD_RIL_NO_SEEK := true
 
 # Fm
-QCOM_FM_ENABLED := true
+#QCOM_FM_ENABLED := true
 
 # Wlan
 BOARD_HAS_QCOM_WLAN              := true
